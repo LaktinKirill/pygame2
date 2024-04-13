@@ -1,38 +1,38 @@
-import pygame
-pygame.init()
-window_size = (800, 600)
-screen=pygame.display.set_mode(window_size)
-pygame.display.set_caption("Тестовый проект")
+import random
 
-image = pygame.image.load("pictcher.png")
-image_rect = image.get_rect()
+class Hero():
+    def __init__(self, name, health = 100, attack_power = 20):
+        self.name = name
+        self.health = health
+        self.attack_power = attack_power
+    def attack(self, other):
+        other.health -= self.attack_power
 
-speed = 5
+    def is_alive(self):
+        return self.health > 0
+class Game():
+    def __init__(self, computer, player):
+        self.computer = computer
+        self.player = player
+    def start(self):
+        print("Игра началась")
+        while self.computer.is_alive() and self.player.is_alive():
+            print(f"{self.player.name} атакует {self.computer.name}")
+            self.player.attack(self.computer)
+            print(f"У {self.computer.name} осталось {self.computer.health} здоровья")
+            if not self.computer.is_alive():
+                print(f"{self.player.name} побеждает")
+                break
 
-run = True
+            print(f"{self.computer.name} атакует {self.player.name}")
+            self.computer.attack(self.player)
+            print(f"У {self.player.name} осталось {self.player.health} здоровья")
+            if not self.player.is_alive():
+                print(f"{self.computer.name} побеждает")
+                break
 
-while run:
-    for event in pygame.event.get():
-        if event == pygame.QUIT:
-            run = False
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        image_rect.x -= speed
-    if keys[pygame.K_RIGHT]:
-        image_rect.x += speed
-    if keys[pygame.K_UP]:
-        image_rect.y -= speed
-    if keys[pygame.K_DOWN]:
-        image_rect.y += speed
-    if event.type == pygame.MOUSEMOTION:
-        mouseX, mouseY = pygame.mouse.get_pos()
-        image_rect.x = mouseX -250
-        image_rect.y = mouseY - 250
+player = Hero("Игрок Артем")
+computer = Hero("Компьютер Вася")
 
-
-
-    screen.fill((255,136,245))
-    screen.blit(image, image_rect)
-    pygame.display.flip()
-
-pygame.quit()
+game = Game(player, computer)
+game.start()
